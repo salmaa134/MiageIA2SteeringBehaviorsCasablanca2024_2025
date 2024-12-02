@@ -83,7 +83,7 @@ function draw() {
   // x, y, diametre (et pas rayon)
   circle(target.x, target.y, 32);
 
-  vehicles.forEach((vehicle) => {
+  vehicles.forEach(vehicle => {
     // je déplace et dessine le véhicule
     vehicle.applyBehaviors(target);
     vehicle.update();
