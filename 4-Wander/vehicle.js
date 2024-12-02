@@ -23,48 +23,28 @@ class Vehicle {
 
   wander() {
     // point devant le véhicule, centre du cercle
-    let wanderPoint = this.vel.copy();
-    wanderPoint.setMag(this.distanceCercle);
-    wanderPoint.add(this.pos);
-
-    if (Vehicle.debug) {
+   
       // on le dessine sous la forme d'une petit cercle rouge
-      fill(255, 0, 0);
-      noStroke();
-      circle(wanderPoint.x, wanderPoint.y, 8);
 
       // Cercle autour du point
-      noFill();
-      stroke(255);
-      circle(wanderPoint.x, wanderPoint.y, this.wanderRadius * 2);
 
       // on dessine une ligne qui relie le vaisseau à ce point
       // c'est la ligne blanche en face du vaisseau
-      line(this.pos.x, this.pos.y, wanderPoint.x, wanderPoint.y);
-    }
+
 
     // On va s'occuper de calculer le point vert SUR LE CERCLE
     // il fait un angle wanderTheta avec le centre du cercle
     // l'angle final par rapport à l'axe des X c'est l'angle du vaisseau
     // + cet angle
-    let theta = this.wanderTheta + this.vel.heading();
-
-    let x = this.wanderRadius * cos(theta);
-    let y = this.wanderRadius * sin(theta);
-
+   
     // maintenant wanderPoint c'est un point sur le cercle
-    wanderPoint.add(x, y);
+   
 
-    if (Vehicle.debug) {
+   
       // on le dessine sous la forme d'un cercle vert
-      fill(0, 255, 0);
-      noStroke();
-      circle(wanderPoint.x, wanderPoint.y, 16);
-
+     
       // on dessine le vecteur desiredSpeed qui va du vaisseau au point vert
-      stroke(255);
-      line(this.pos.x, this.pos.y, wanderPoint.x, wanderPoint.y);
-    }
+     
     // On a donc la vitesse désirée que l'on cherche qui est le vecteur
     // allant du vaisseau au cercle vert. On le calcule :
     // ci-dessous, steer c'est la desiredSpeed directement !
@@ -72,13 +52,13 @@ class Vehicle {
     // dans sa vidéo, on ne calcule pas la formule classique
     // force = desiredSpeed - vitesseCourante, mais ici on a directement
     // force = desiredSpeed
-    let steer = wanderPoint.sub(this.pos);
+    let force = createVector(0, 0);
 
-    steer.setMag(this.maxForce);
-    this.applyForce(steer);
+    force.setMag(this.maxForce);
+    this.applyForce(force);
 
     // On déplace le point vert sur le cerlcle (en radians)
-    this.wanderTheta += random(-this.displaceRange, this.displaceRange);
+  
   }
 
   evade(vehicle) {

@@ -39,8 +39,9 @@ class Vehicle {
   }
 
   flee(target) {
-    // inverse de seek !
-    return this.seek(target).mult(-1);
+    // inverse de seek ! REMPLACER LA LIGNE SUIVANTE POUR RENVOYER UNE FORCE INVERSE A CELLE RENVOYEE
+    // PAR LE COMPORTEMENT SEEK
+    return createVector(0, 0);
   }
 
   // applyForce est une méthode qui permet d'appliquer une force au véhicule
@@ -124,18 +125,4 @@ class Vehicle {
       this.pos.y = height + this.r;
     }
   }
-}
-
-class Target extends Vehicle {
-  constructor(x, y) {
-    super(x, y);
-    this.vel = createVector(random(4, 8), random(4, 8));
-  }
-
-  show() {
-    fill("green");
-    noStroke();
-    circle(this.pos.x, this.pos.y, 32);
-  }
-
 }

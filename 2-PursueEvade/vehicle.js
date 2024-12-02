@@ -42,30 +42,32 @@ class Vehicle {
      cette methode renvoie la force à appliquer au véhicule
   */
   pursue(target) {
+    let force;
+    
     // TODO
     // 1 - calcul de la position future de la cible
     // on fait une copie de la vitesse de la target
     // 2 - On calcule un vecteur colinéaire au vecteur vitesse de la cible,
-    let prediction = target.vel.copy();
+   
     // et on le multiplie par 10 (10 frames)
     // 3 - prediction dans 10 frames = 10 fois la longueur du vecteur
-    prediction.mult(10);
+   
     // 4 - on positionne de la target au bout de ce vecteur
-    prediction.add(target.pos);
+   
 
     // dessin du vecteur prediction
-    let v = p5.Vector.sub(prediction, target.pos);
-    this.drawVector(target.pos, v);
+    
 
 
     // 2 - dessin d'un cercle vert de rayon 16 pour voir ce point
-    fill("green");
-    circle(prediction.x, prediction.y, 20);
+   
 
     // 3 - appel à seek avec ce point comme cible 
-    let force = this.seek(prediction);
-
+   
+    // LIGNE SUIVANTE A VIRER UNE FOIS LE COMPORTEMENT FAIT
+    force = createVector(0, 0);
     // n'oubliez pas, on renvoie la force à appliquer au véhicule !
+
     return force;
   }
 
@@ -73,8 +75,9 @@ class Vehicle {
      cette methode renvoie la force à appliquer au véhicule
   */
   evade(target) {
-    let force = this.pursue(target);
-    return(force.mult(-1));
+    // Renvoie la force inverse de celle retournée par pursue
+    // REMPLACER LA LIGNE SUIVANTE !!!
+    return new createVector(0, 0);
   }
 
   // applyForce est une méthode qui permet d'appliquer une force au véhicule
