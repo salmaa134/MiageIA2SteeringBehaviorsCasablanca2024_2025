@@ -2,6 +2,8 @@ let pursuer;
 let target;
 let sliderVitesseMaxCible;
 
+// Appelé une seule fois après que la page ait été affichée à l'écran
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pursuer = new Vehicle(random(width), random(height));

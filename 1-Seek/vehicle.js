@@ -23,17 +23,16 @@ class Vehicle {
   seek(target) {
     // on calcule la direction vers la cible
     // C'est l'ETAPE 1 (action : se diriger vers une cible)
-    let force = p5.Vector.sub(target, this.pos);
+    let vitesseSouhaitee = p5.Vector.sub(target, this.pos);
 
     // Dessous c'est l'ETAPE 2 : le pilotage (comment on se dirige vers la cible)
     // on limite ce vecteur à la longueur maxSpeed
-    force.setMag(this.maxSpeed);
-
-    // Si on s'arrête ici, force = desiredSpeed
+    vitesseSouhaitee.setMag(this.maxSpeed);
 
     // on calcule maintenant force = desiredSpeed - currentSpeed
-    force.sub(this.vel);
-    // et on limite cette force à la longueur maxForce
+    let force = p5.Vector.sub(vitesseSouhaitee, this.vel);
+
+    // et on limite cette force à maxForce
     force.limit(this.maxForce);
     return force;
   }

@@ -1,7 +1,9 @@
 let target, vehicle;
+let sliderVitesseMaxVehicules;
 
 // la fonction setup est appelée une fois au démarrage du programme par p5.js
 function setup() {
+  console.log("setup");
   // on crée un canvas de 800px par 800px
   createCanvas(800, 800);
 
@@ -10,18 +12,50 @@ function setup() {
 
   // on crée un véhicule
   vehicle = new Vehicle(400, 400);
+
+  // "label", min, max, val, pas, posX, posY, couleur, propriété à changer
+  createMonSlider("maxSpeed", 1, 50, 10, 1, 10, 0, "white", "maxSpeed");
+  createMonSlider("maxForce", 0.05, 4, 0.25, 0.01, 10, 30, "white", "maxForce");
+  
+}
+
+function createMonSlider(label, min, max, val, step, x, y, color, prop) {
+  // On crée un slider pour régler la vitesse max
+  // des véhicules
+  // slider les paramètres : Min, Max, Valeur, Pas
+  let slider = createSlider(min, max, val, step);
+  // on positionne le slider en haut à gauche du canvas
+  slider.position(100, y+17);
+  // Label à gauche du slider "maxSpeed"
+ labelHTML = createP(label);
+  // label en blanc
+  labelHTML.style('color', 'white');
+  // on le positionne en x=10 y = 10
+  labelHTML.position(x, y);
+  // On affiche la valeur du slider à droite du slider
+  let labelValue = createP(slider.value());
+  labelValue.style('color', color);
+  labelValue.position(250, y);
+  // on veut que la valeur soit mise à jour quand on déplace
+  // le slider
+  slider.input(() => {
+    labelValue.html(slider.value());
+    vehicle[prop] = slider.value();
+  });
+
 }
 
 // la fonction draw est appelée en boucle par p5.js, 60 fois par seconde par défaut
 // Le canvas est effacé automatiquement avant chaque appel à draw
 function draw() {
-  // fond noir pour le canvas
-  background(0);
+  // On efface le canvas avec un fond noir, params = couleurs
+  background("black");
 
   // A partir de maintenant toutes les formes pleines seront en rouge
   fill("red");
   // pas de contours pour les formes.
-  noStroke();
+  // epaisseur du trait par défaut 1px;
+  stroke("white")
 
   // mouseX et mouseY sont des variables globales de p5.js, elles correspondent à la position de la souris
   // on les stocke dans un vecteur pour pouvoir les utiliser avec la méthode seek (un peu plus loin)
