@@ -1,4 +1,5 @@
 class Vehicle {
+  static debug = false;
   constructor(x, y, image) {
     this.pos = createVector(x, y);
     this.vel = createVector(1, 0);
@@ -33,6 +34,7 @@ class Vehicle {
     centreCercleDevant.setMag(this.distanceCercle);
     centreCercleDevant.add(this.pos);
    
+    if(Vehicle.debug) {
       // on le dessine sous la forme d'une petit cercle rouge
       fill("red");
       circle(centreCercleDevant.x, centreCercleDevant.y, 8);
@@ -45,7 +47,7 @@ class Vehicle {
       // on dessine une ligne qui relie le vaisseau à ce point
       // c'est la ligne blanche en face du vaisseau
       line(this.pos.x, this.pos.y, centreCercleDevant.x, centreCercleDevant.y);
-
+    }
 
     // On va s'occuper de calculer le point vert SUR LE CERCLE
     // il fait un angle wanderTheta avec le centre du cercle
@@ -59,15 +61,18 @@ class Vehicle {
 
     // maintenant pointSurCercle c'est un point sur le cercle
     // on le dessine sous la forme d'un cercle vert
+    if(Vehicle.debug) {
     fill("lightGreen");
     circle(pointSurCercle.x, pointSurCercle.y, 8);
-     
+
+     // on dessine une ligne qui va du vaisseau vers le point sur le 
+    // cercle
+    line(this.pos.x, this.pos.y, pointSurCercle.x, pointSurCercle.y);
+   
+    }
     // on dessine le vecteur desiredSpeed qui va du vaisseau au point vert
     let desiredSpeed = p5.Vector.sub(pointSurCercle, this.pos);
 
-    // on dessine une ligne qui va du vaisseau vers le point sur le 
-    // cercle
-    line(this.pos.x, this.pos.y, pointSurCercle.x, pointSurCercle.y);
      
     // On a donc la vitesse désirée que l'on cherche qui est le vecteur
     // allant du vaisseau au cercle vert. On le calcule :

@@ -63,7 +63,7 @@ vehicles.forEach((vehicle, index) => {
         steeringForce = vehicle.arrive(target,0);
       } else {
         let vehiculePrecedent = vehicles[index - 1];
-        steeringForce = vehicle.arrive(vehiculePrecedent.pos,40);
+        steeringForce = vehicle.arrive(vehiculePrecedent.pos,10);
       }
       break;
     case "texte":

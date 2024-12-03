@@ -23,7 +23,7 @@ class Vehicle {
     this.velocity = createVector(this.maxspeed, 0);
     this.couleur = "black";
 
-    this.wanderWeight = 0;
+    this.wanderWeight = 1;
     this.followPathWeight = 2;
     this.separateWeight = 0;
 
