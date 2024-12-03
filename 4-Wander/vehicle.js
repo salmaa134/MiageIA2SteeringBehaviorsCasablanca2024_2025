@@ -21,11 +21,11 @@ class Vehicle {
     this.path = [];
   }
 
-  applybehaviors() {
+  applyBehaviors() {
     let force = this.wander();
     this.applyForce(force);
   }
-  
+
   wander() {
     // point devant le véhicule, centre du cercle
     

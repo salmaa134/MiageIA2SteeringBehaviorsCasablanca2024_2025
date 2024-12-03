@@ -25,7 +25,7 @@ function draw() {
   //background(0, 0, 0, 20);
 
   vehicles.forEach(vehicle => {
-    vehicle.wander();
+    vehicle.applyBehaviors();
 
     vehicle.update();
     vehicle.show();
