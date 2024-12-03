@@ -28,8 +28,8 @@ class Target extends Vehicle {
         noStroke();
         // on se place à la position du vehicule
         translate(this.pos.x, this.pos.y);
-        // on dessine un cercle de rayon 32
-        circle(0, 0, this.r);
+        // on dessine un cercle
+        circle(0, 0, this.r*2);
         pop();
 
         this.drawVelocityVector();

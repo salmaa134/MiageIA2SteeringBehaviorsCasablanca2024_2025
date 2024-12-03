@@ -17,7 +17,7 @@ class Vehicle {
   /*
    seek est une méthode qui permet de faire se rapprocher le véhicule de la cible passée en paramètre
    */
-    seek(target) {
+  seek(target) {
     // on calcule la direction vers la cible
     // C'est l'ETAPE 1 (action : se diriger vers une cible)
     let force = p5.Vector.sub(target, this.pos);
@@ -43,31 +43,33 @@ class Vehicle {
   */
   pursue(target) {
     let force;
-    
+
     // TODO
     // 1 - calcul de la position future de la cible
     // on fait une copie de la vitesse de la target
+    let prediction = target.vel.copy();
+    // on multiplie cette vitesse par 10
+    //  - prediction dans 10 frames = 10 fois la longueur du vecteur
+    prediction.mult(10);
+
+    // 3 - dessin du vecteur prediction
+    this.drawVector(target.pos, prediction, "yellow");
+
     // 2 - On calcule un vecteur colinéaire au vecteur vitesse de la cible,
-   
-    // et on le multiplie par 10 (10 frames)
-    // 3 - prediction dans 10 frames = 10 fois la longueur du vecteur
-   
-    // 4 - on positionne de la target au bout de ce vecteur
-   
-
-    // dessin du vecteur prediction
-    
-
+    // et on l'ajoute à la position de la cible
+    prediction.add(target.pos);
+    // Maintenant les valeurs x et y de prediction sont
+    // des  valeurs absolues dans l'écran, pas des valeurs relatives
 
     // 2 - dessin d'un cercle vert de rayon 16 pour voir ce point
-   
+    // Déjà fait dans le code de Target, mais on va le refaire ici
+    // et mettre en commentaires celui de target
+    fill(0, 255, 0);
+    circle(prediction.x, prediction.y, 16);
 
     // 3 - appel à seek avec ce point comme cible 
-   
-    // LIGNE SUIVANTE A VIRER UNE FOIS LE COMPORTEMENT FAIT
-    force = createVector(0, 0);
+    force = this.seek(prediction);
     // n'oubliez pas, on renvoie la force à appliquer au véhicule !
-
     return force;
   }
 
@@ -77,7 +79,7 @@ class Vehicle {
   evade(target) {
     // Renvoie la force inverse de celle retournée par pursue
     // REMPLACER LA LIGNE SUIVANTE !!!
-    return new createVector(0, 0);
+    return this.pursue(target).mult(-1);
   }
 
   // applyForce est une méthode qui permet d'appliquer une force au véhicule
@@ -125,18 +127,18 @@ class Vehicle {
 
     // draw velocity vector
     pop();
-    this.drawVector(this.pos, this.vel.copy().mult(10));
+    this.drawVector(this.pos, this.vel.copy().mult(10), "red");
   }
 
-  drawVector(pos, v) {
+  drawVector(pos, v, color) {
     push();
     // Dessin du vecteur depuis pos comme origne
     strokeWeight(3);
-    stroke("red");
+    stroke(color);
     line(pos.x, pos.y, pos.x + v.x, pos.y + v.y);
     // dessine une petite fleche au bout du vecteur vitesse
     let arrowSize = 5;
-    translate(pos.x + v.x , pos.y + v.y);
+    translate(pos.x + v.x, pos.y + v.y);
     rotate(v.heading());
     translate(-arrowSize / 2, 0);
     triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
