@@ -3,10 +3,6 @@ class Target extends Vehicle {
       super(x, y);
       this.vel = p5.Vector.random2D();
       this.vel.mult(20);
-
-    
-      
-    
     }
   
     show() {

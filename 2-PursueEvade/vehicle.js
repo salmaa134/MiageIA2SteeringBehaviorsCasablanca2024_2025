@@ -1,4 +1,6 @@
 class Vehicle {
+  static debug = false;
+
   constructor(x, y) {
     // position du véhicule
     this.pos = createVector(x, y);
@@ -12,6 +14,10 @@ class Vehicle {
     this.maxForce = 0.25;
     // rayon du véhicule
     this.r = 16;
+
+    // paramètre de pursue
+    // champ de vision
+    this.champVision = 300;
   }
 
   /*
@@ -52,8 +58,10 @@ class Vehicle {
     //  - prediction dans 10 frames = 10 fois la longueur du vecteur
     prediction.mult(10);
 
-    // 3 - dessin du vecteur prediction
-    this.drawVector(target.pos, prediction, "yellow");
+    if (Vehicle.debug) {
+      // 3 - dessin du vecteur prediction
+      this.drawVector(target.pos, prediction, "yellow");
+    }
 
     // 2 - On calcule un vecteur colinéaire au vecteur vitesse de la cible,
     // et on l'ajoute à la position de la cible
@@ -64,12 +72,25 @@ class Vehicle {
     // 2 - dessin d'un cercle vert de rayon 16 pour voir ce point
     // Déjà fait dans le code de Target, mais on va le refaire ici
     // et mettre en commentaires celui de target
-    fill(0, 255, 0);
-    circle(prediction.x, prediction.y, 16);
+    if (Vehicle.debug) {
+      fill(0, 255, 0);
+      circle(prediction.x, prediction.y, 16);
 
-    // 3 - appel à seek avec ce point comme cible 
-    force = this.seek(prediction);
-    // n'oubliez pas, on renvoie la force à appliquer au véhicule !
+      // dessin du champ de vision
+      noFill();
+      stroke("white");
+      strokeWeight(1);
+      circle(this.pos.x, this.pos.y, this.champVision * 2);
+    }
+
+    // calcul de la distance entre le véhicule (this) et la cible
+    let distance = p5.Vector.dist(this.pos, target.pos);
+    if (distance < this.champVision) {
+      // 3 - appel à seek avec ce point comme cible 
+      force = this.seek(prediction);
+    } else {
+      return createVector(0, 0);
+    }
     return force;
   }
 
@@ -78,7 +99,6 @@ class Vehicle {
   */
   evade(target) {
     // Renvoie la force inverse de celle retournée par pursue
-    // REMPLACER LA LIGNE SUIVANTE !!!
     return this.pursue(target).mult(-1);
   }
 
