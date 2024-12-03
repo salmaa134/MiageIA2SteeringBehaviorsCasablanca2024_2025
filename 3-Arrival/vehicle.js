@@ -42,8 +42,8 @@ class Vehicle {
   // qui dira à quelle distance derrière le véhicule on doit s'arrêter
   // si d=0 c'est le comportement arrival normal
   seek(target, arrival, d = 0) {
-    let force = p5.Vector.sub(target, this.pos);
-    let desiredSpeed = this.maxSpeed;
+    let desiredSpeed = p5.Vector.sub(target, this.pos);
+    let desiredSpeedMagnitude = this.maxSpeed;
 
     if (arrival) {
       // on dessine un cercle de rayon 100 
@@ -67,13 +67,13 @@ class Vehicle {
         // intervalle initial, vers la même valeur dans un
         // autre intervalle
         // newVal = map(value, start1, stop1, start2, stop2, [withinBounds])
-        desiredSpeed = map(dist, d, this.rayonZoneDeFreinage, 0, this.maxSpeed)
+        desiredSpeedMagnitude = map(dist, d, this.rayonZoneDeFreinage, 0, this.maxSpeed)
       }
     }
 
     // equation force = vitesseDesiree - vitesseActuelle
-    force.setMag(desiredSpeed);
-    force.sub(this.vel);
+    desiredSpeed.setMag(desiredSpeedMagnitude);
+    let force = p5.Vector.sub(desiredSpeed, this.vel);
     // et on limite la force
     force.limit(this.maxForce);
     return force;
