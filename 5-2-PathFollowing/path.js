@@ -7,10 +7,12 @@ class Path {
     }
   
     show() {
+      // la ligne au milieu en blanc
       stroke(255);
       strokeWeight(2);
       line(this.start.x, this.start.y, this.end.x, this.end.y);
   
+      // La route en gris (blanc 255 mais transparent 100)
       stroke(255, 100);
       strokeWeight(this.radius * 2);
       line(this.start.x, this.start.y, this.end.x, this.end.y);

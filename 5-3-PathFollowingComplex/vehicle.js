@@ -25,7 +25,7 @@ class Vehicle {
 
     this.wanderWeight = 1;
     this.followPathWeight = 2;
-    this.separateWeight = 0;
+    this.separateWeight = 3;
 
      // pour comportement wander
      this.distanceCercle = 250;

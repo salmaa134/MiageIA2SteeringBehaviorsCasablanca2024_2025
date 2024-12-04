@@ -50,7 +50,8 @@ function draw() {
 
 function newPath() {
   // Simple suite de points partant de 30, 30 et allant vers 30, height - 30 etc.
-  path = new Path();
+  
+  /*path = new Path();
   let offset = 100;
   path.addPoint(offset, offset);
   path.addPoint(300, 180);
@@ -59,6 +60,13 @@ function newPath() {
   path.addPoint(width / 2, height - offset * 3);
   path.addPoint(200,550);
   path.addPoint(offset, height - offset);
+  */
+
+  path = new Path();
+  let offset = 100;
+  path.addPoint(offset, offset);
+  path.addPoint(width -offset, offset);
+  path.addPoint(300, 300);
 }
 
 function newVehicle(x, y) {
