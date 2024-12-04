@@ -50,22 +50,46 @@ class Vehicle {
 
     let seekForce = this.arrive(target);
     let avoidForce = this.avoid(obstacles);
-    let separateForce = this.separate(vehicules);
-    let boudariesForce = this.boundaries();
+    //let separateForce = this.separate(vehicules);
+    //let boudariesForce = this.boundaries();
 
     seekForce.mult(0.2);
     avoidForce.mult(3);
-    separateForce.mult(0.2);
-    boudariesForce.mult(3);
+    //separateForce.mult(0.2);
+    //boudariesForce.mult(3);
 
     this.applyForce(seekForce);
     this.applyForce(avoidForce);
-    this.applyForce(separateForce);
-    this.applyForce(boudariesForce);
+    //this.applyForce(separateForce);
+    //this.applyForce(boudariesForce);
   }
 
   avoid(obstacles) {
-    
+      // On calcule un point devant le véhicule courant
+      // on l'appelle ahead
+      let ahead = this.vel.copy();
+      ahead.mult(50);
+      
+      // on dessine le vecteur vitesse en jaune
+      this.drawVector(this.pos, ahead, "yellow");
+
+      // Pour le dessiner, il faut lui ajouter la position du véhicule
+      ahead.add(this.pos);
+      
+      // on le dessine en rouge
+      fill("red");
+      circle(ahead.x, ahead.y, 10);
+
+      // On cherche l'obstacle le plus proche
+      let obstacleLePlusProche = this.getObstacleLePlusProche(obstacles);
+
+      // On calcule la distance entre la position de l'obstacle le plus proche
+      // et le point ahead
+
+      // si distance < rayon de l'obstacle + rayon du véhicule
+      // Alors il y a collision possible, on calcule la force d'évitement
+      
+
       return createVector(0, 0);
 
   }
