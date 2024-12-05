@@ -48,6 +48,13 @@ class Boid {
     this.boundariesDistance = 25;
 
     this.boundariesWeight = 10;
+
+    // Wander
+    // pour comportement wander
+    this.distanceCercle = 150;
+    this.wanderRadius = 50;
+    this.wanderTheta = 0;
+    this.displaceRange = 0.1;
   }
 
   // Equivalent de "applyBehaviors" dans le code des autres exemples
@@ -116,7 +123,7 @@ class Boid {
   }
 
   cohesion(boids) {
-    let perceptionRadius = 2*this.perceptionRadius;
+    let perceptionRadius = 2 * this.perceptionRadius;
 
     let steering = createVector();
     let total = 0;
@@ -159,18 +166,81 @@ class Boid {
 
   flee(target) {
     // inverse de seek ! 
-    let force = this.seek(target).mult(-1);  
+    let force = this.seek(target).mult(-1);
     return force;
   }
 
   fleeWithTargetRadius(target) {
     const d = this.pos.dist(target);
-    if(d < target.r + 10) {
+    if (d < target.r + 10) {
       // je fuis la cible, on réutilise le comportement flee
       const fleeForce = this.flee(target);
       fleeForce.mult(100);
       this.applyForce(fleeForce);
     }
+  }
+
+  wander() {
+    // point devant le véhicule, centre du cercle
+
+    let centreCercleDevant = this.vel.copy();
+    centreCercleDevant.setMag(this.distanceCercle);
+    centreCercleDevant.add(this.pos);
+
+    if (Boid.debug) {
+      // on le dessine sous la forme d'une petit cercle rouge
+      fill("red");
+      circle(centreCercleDevant.x, centreCercleDevant.y, 8);
+
+      // Cercle autour du point
+      noFill();
+      stroke("white");
+      circle(centreCercleDevant.x, centreCercleDevant.y, this.wanderRadius * 2);
+
+      // on dessine une ligne qui relie le vaisseau à ce point
+      // c'est la ligne blanche en face du vaisseau
+      line(this.pos.x, this.pos.y, centreCercleDevant.x, centreCercleDevant.y);
+    }
+
+    // On va s'occuper de calculer le point vert SUR LE CERCLE
+    // il fait un angle wanderTheta avec le centre du cercle
+    // l'angle final par rapport à l'axe des X c'est l'angle du vaisseau
+    // + cet angle
+    let wanderAngle = this.vel.heading() + this.wanderTheta;
+    // on calcule les coordonnées du point vert
+    let pointSurCercle = createVector(this.wanderRadius * cos(wanderAngle), this.wanderRadius * sin(wanderAngle));
+    // on ajoute la position du vaisseau
+    pointSurCercle.add(centreCercleDevant);
+
+    // maintenant pointSurCercle c'est un point sur le cercle
+    // on le dessine sous la forme d'un cercle vert
+    if (Boid.debug) {
+      fill("lightGreen");
+      circle(pointSurCercle.x, pointSurCercle.y, 8);
+
+      // on dessine une ligne qui va du vaisseau vers le point sur le 
+      // cercle
+      line(this.pos.x, this.pos.y, pointSurCercle.x, pointSurCercle.y);
+
+    }
+    // on dessine le vecteur desiredSpeed qui va du vaisseau au point vert
+    let desiredSpeed = p5.Vector.sub(pointSurCercle, this.pos);
+
+
+    // On a donc la vitesse désirée que l'on cherche qui est le vecteur
+    // allant du vaisseau au cercle vert. On le calcule :
+    // ci-dessous, steer c'est la desiredSpeed directement !
+    // Voir l'article de Craig Reynolds, Daniel Shiffman s'est trompé
+    // dans sa vidéo, on ne calcule pas la formule classique
+    // force = desiredSpeed - vitesseCourante, mais ici on a directement
+    // force = desiredSpeed
+    let force = p5.Vector.sub(desiredSpeed, this.vel);
+    force.setMag(this.maxForce);
+
+    // On déplace le point vert sur le cerlcle (en radians)
+    this.wanderTheta += random(-this.displaceRange, this.displaceRange);
+
+    return force;
   }
 
   // Permet de rester dans les limites d'une zone rectangulaire.
@@ -187,8 +257,6 @@ class Boid {
   // normalement : force = vitesseDesiree - vitesseActuelle
   // paramètres = un rectangle (bx, by, bw, bh) et une distance d
   boundaries(bx, by, bw, bh, d) {
-    console.log(bx, by, bw, bh, d)
-
     let vitesseDesiree = null;
 
     const xBordGauche = bx + d;
@@ -224,7 +292,7 @@ class Boid {
       noFill();
       stroke("white");
       rect(bx, by, bw, bh);
-      
+
       // et du rectangle intérieur avec une bordure rouge de d pixels
       stroke("red");
       rect(bx + d, by + d, bw - 2 * d, bh - 2 * d);
@@ -235,6 +303,25 @@ class Boid {
     // si on est pas près du bord (vitesse désirée nulle), on renvoie un vecteur nul
     return createVector(0, 0);
   }
+
+  getVehiculeLePlusProche(vehicules) {
+    let plusPetiteDistance = Infinity;
+    let vehiculeLePlusProche;
+
+    vehicules.forEach(v => {
+      if (v != this) {
+        // Je calcule la distance entre le vaisseau et le vehicule
+        const distance = this.pos.dist(v.pos);
+        if (distance < plusPetiteDistance) {
+          plusPetiteDistance = distance;
+          vehiculeLePlusProche = v;
+        }
+      }
+    });
+
+    return vehiculeLePlusProche;
+  }
+
 
   applyForce(force) {
     this.acc.add(force);
@@ -255,7 +342,7 @@ class Boid {
       push();
       translate(this.pos.x, this.pos.y);
       if (Math.abs(this.vel.x) > Math.abs(this.vel.y)) {
-        if(this.vel.x > 0) {
+        if (this.vel.x > 0) {
           // "L'objet va vers la droite.";
           rotate(PI);
         } else {
@@ -264,13 +351,13 @@ class Boid {
         }
       } else {
         if (this.vel.y > 0) {
-          rotate(-PI/2)
+          rotate(-PI / 2)
           // "L'objet va vers le haut." 
         } else {
-          rotate(PI/2)
+          rotate(PI / 2)
           // : "L'objet va vers le bas."
         }
-    }
+      }
       image(this.image, 0, 0, this.r, this.r);
 
       pop();

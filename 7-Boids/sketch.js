@@ -6,15 +6,18 @@
 // Equivalent du tableau de véhicules dans les autres exemples
 const flock = [];
 let fishImage;
+let requinImage;
 
 let alignSlider, cohesionSlider, separationSlider;
 let labelNbBoids;
 
 let target;
+let requin;
 
 function preload() {
   // On charge une image de poisson
   fishImage = loadImage('assets/niceFishtransparent.png');
+  requinImage = loadImage('assets/requin.png');
 }
 
 function setup() {
@@ -49,6 +52,12 @@ function setup() {
   // target qui suit la souris
   target = createVector(mouseX, mouseY);
   target.r = 50;
+
+  // requin prédateur
+  requin = new Boid(width/2, height/2, requinImage);
+  requin.r = 40;
+  requin.maxSpeed = 7;
+  requin.maxForce = 0.5;
 }
 
 function creerUnSlider(label, tabVehicules, min, max, val, step, posX, posY, propriete) {
@@ -97,6 +106,41 @@ function draw() {
     boid.update();
     boid.show();
   }  
+
+  // dessin du requin
+  let wanderForce = requin.wander();
+  wanderForce.mult(1);
+  requin.applyForce(wanderForce);
+
+  // calcul du poisson le plus proche
+  let seekForce;
+  let rayonDeDetection = 70;
+  // dessin du cercle en fil de fer jaune
+  noFill();
+  stroke("yellow");
+  ellipse(requin.pos.x, requin.pos.y, rayonDeDetection*2, rayonDeDetection*2);
+
+  let closest = requin.getVehiculeLePlusProche(flock);
+
+  if (closest) {
+    // distance entre le requin et le poisson le plus proche
+    let d = p5.Vector.dist(requin.pos, closest.pos);
+    if(d < rayonDeDetection) {
+      // on fonce vers le poisson !!!
+      seekForce = requin.seek(closest.pos);
+      seekForce.mult(7);
+      requin.applyForce(seekForce);
+    }
+    if (d < 5) {
+      // on mange !!!!
+      // on retire le poisson du tableau flock
+      let index = flock.indexOf(closest);
+      flock.splice(index, 1);
+    }
+  }
+  requin.edges();
+  requin.update();
+  requin.show();
 }
 
 function mouseDragged() {
