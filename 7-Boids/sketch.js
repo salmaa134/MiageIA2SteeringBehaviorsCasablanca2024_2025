@@ -10,6 +10,8 @@ let fishImage;
 let alignSlider, cohesionSlider, separationSlider;
 let labelNbBoids;
 
+let target;
+
 function preload() {
   // On charge une image de poisson
   fishImage = loadImage('assets/niceFishtransparent.png');
@@ -25,8 +27,10 @@ function setup() {
   creerUnSlider("Poids alignment", flock, 0, 2, 1.5, 0.1, 10, posYSliderDeDepart, "alignWeight");
   creerUnSlider("Poids cohesion", flock, 0, 2, 1, 0.1, 10, posYSliderDeDepart+30, "cohesionWeight");
   creerUnSlider("Poids séparation", flock, 0, 15, 3, 0.1, 10, posYSliderDeDepart+60,"separationWeight");
-  creerUnSlider("Rayon des boids", flock, 4, 40, 6, 1, 10, posYSliderDeDepart+90,"r");
-
+  creerUnSlider("Poids boundaries", flock, 0, 15, 10, 1, 10, posYSliderDeDepart+90,"boundariesWeight");
+  
+  creerUnSlider("Rayon des boids", flock, 4, 40, 6, 1, 10, posYSliderDeDepart+120,"r");
+  creerUnSlider("Perception radius", flock, 15, 60, 25, 1, 10, posYSliderDeDepart+150,"perceptionRadius");
 
   // On créer les "boids". Un boid en anglais signifie "un oiseau" ou "un poisson"
   // Dans cet exemple c'est l'équivalent d'un véhicule dans les autres exemples
@@ -40,7 +44,11 @@ function setup() {
    labelNbBoids = createP("Nombre de boids : " + flock.length);
   // couleur blanche
   labelNbBoids.style('color', 'white');
-  labelNbBoids.position(10, posYSliderDeDepart+120);
+  labelNbBoids.position(10, posYSliderDeDepart+180);
+
+  // target qui suit la souris
+  target = createVector(mouseX, mouseY);
+  target.r = 50;
 }
 
 function creerUnSlider(label, tabVehicules, min, max, val, step, posX, posY, propriete) {
@@ -63,6 +71,8 @@ function creerUnSlider(label, tabVehicules, min, max, val, step, posX, posY, pro
       vehicle[propriete] = slider.value();
     });
   });
+
+  return slider;
 }
 
 function draw() {
@@ -71,9 +81,19 @@ function draw() {
     // mettre à jour le nombre de boids
     labelNbBoids.html("Nombre de boids : " + flock.length);
 
+    // on dessine la cible qui suit la souris
+    target.x = mouseX;
+    target.y = mouseY;
+    fill("lightgreen");
+    noStroke();
+    ellipse(target.x, target.y, target.r, target.r);
+
   for (let boid of flock) {
     //boid.edges();
     boid.flock(flock);
+
+    boid.fleeWithTargetRadius(target);
+
     boid.update();
     boid.show();
   }  

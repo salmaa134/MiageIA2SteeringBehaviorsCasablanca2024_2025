@@ -9,8 +9,6 @@ class Boid {
 
     this.pos = createVector(x, y);
 
-    
-
     this.vel = p5.Vector.random2D();
     this.vel.setMag(random(2, 4));
     this.acc = createVector();
@@ -35,14 +33,20 @@ class Boid {
       this.imageH = this.r / ratio;
     }
 
+    this.perceptionRadius = 25;
     // pour le comportement align
     this.alignWeight = 1.5;
-    this.perceptionRadius = 25;
     // pour le comportement cohesion
     this.cohesionWeight = 1;
     // Pour la séparation
     this.separationWeight = 2;
     // Pour le confinement
+    this.boundariesX = 0;
+    this.boundariesY = 0
+    this.boundariesWidth = width;
+    this.boundariesHeight = height;
+    this.boundariesDistance = 25;
+
     this.boundariesWeight = 10;
   }
 
@@ -52,7 +56,7 @@ class Boid {
     let alignment = this.align(boids);
     let cohesion = this.cohesion(boids);
     let separation = this.separation(boids);
-    let boundaries = this.boundaries(0, 0, width, height, 25);
+    let boundaries = this.boundaries(this.boundariesX, this.boundariesY, this.boundariesWidth, this.boundariesHeight, this.boundariesDistance);
     //let boundaries = this.boundaries(100, 200, 800, 400, 25);
 
     alignment.mult(this.alignWeight);
@@ -135,6 +139,40 @@ class Boid {
     return steering;
   }
 
+  // seek est une méthode qui permet de faire se rapprocher le véhicule de la cible passée en paramètre
+  seek(target) {
+    // on calcule la direction vers la cible
+    // C'est l'ETAPE 1 (action : se diriger vers une cible)
+    let vitesseSouhaitee = p5.Vector.sub(target, this.pos);
+
+    // Dessous c'est l'ETAPE 2 : le pilotage (comment on se dirige vers la cible)
+    // on limite ce vecteur à la longueur maxSpeed
+    vitesseSouhaitee.setMag(this.maxSpeed);
+
+    // on calcule maintenant force = desiredSpeed - currentSpeed
+    let force = p5.Vector.sub(vitesseSouhaitee, this.vel);
+
+    // et on limite cette force à maxForce
+    force.limit(this.maxForce);
+    return force;
+  }
+
+  flee(target) {
+    // inverse de seek ! 
+    let force = this.seek(target).mult(-1);  
+    return force;
+  }
+
+  fleeWithTargetRadius(target) {
+    const d = this.pos.dist(target);
+    if(d < target.r + 10) {
+      // je fuis la cible, on réutilise le comportement flee
+      const fleeForce = this.flee(target);
+      fleeForce.mult(100);
+      this.applyForce(fleeForce);
+    }
+  }
+
   // Permet de rester dans les limites d'une zone rectangulaire.
   // Lorsque le véhicule s'approche d'un bord vertical ou horizontal
   // on calcule la vitesse désirée dans la direction "réfléchie" par
@@ -148,7 +186,8 @@ class Boid {
   // calculée on lui donne une norme égale à maxSpeed, puis on calcule la force
   // normalement : force = vitesseDesiree - vitesseActuelle
   // paramètres = un rectangle (bx, by, bw, bh) et une distance d
-  boundaries(bx, by,bw, bh, d) {
+  boundaries(bx, by, bw, bh, d) {
+    console.log(bx, by, bw, bh, d)
 
     let vitesseDesiree = null;
 
@@ -185,6 +224,7 @@ class Boid {
       noFill();
       stroke("white");
       rect(bx, by, bw, bh);
+      
       // et du rectangle intérieur avec une bordure rouge de d pixels
       stroke("red");
       rect(bx + d, by + d, bw - 2 * d, bh - 2 * d);
