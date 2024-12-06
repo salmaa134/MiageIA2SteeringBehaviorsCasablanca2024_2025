@@ -114,7 +114,7 @@ function draw() {
       }
     }
 
-    // On syupprime les voitures mortes ou celles qui ont fini le circuit
+    // On supprime les voitures mortes ou celles qui ont fini le circuit
     for (let i = population.length - 1; i >= 0; i--) {
       const particle = population[i];
       if (particle.dead || particle.finished) {

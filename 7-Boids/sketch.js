@@ -86,6 +86,9 @@ function creerUnSlider(label, tabVehicules, min, max, val, step, posX, posY, pro
 
 function draw() {
   background(0);
+  // une image de fond
+  //imageMode(CORNER);
+  //image(requinImage, 0, 0, width, height);
 
     // mettre à jour le nombre de boids
     labelNbBoids.html("Nombre de boids : " + flock.length);

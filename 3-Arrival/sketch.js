@@ -62,8 +62,14 @@ vehicles.forEach((vehicle, index) => {
         // il suite la cible controlée par la souris
         steeringForce = vehicle.arrive(target,0);
       } else {
+        // Le vehicule d'index "index" suit le véhicule précédent
         let vehiculePrecedent = vehicles[index - 1];
         steeringForce = vehicle.arrive(vehiculePrecedent.pos,10);
+
+        // Je relie les véhicules entre eux avec une ligne
+        stroke(255);
+        strokeWeight(vehicle.r*2);
+        line(vehiculePrecedent.pos.x, vehiculePrecedent.pos.y, vehicle.pos.x, vehicle.pos.y);
       }
       break;
     case "texte":

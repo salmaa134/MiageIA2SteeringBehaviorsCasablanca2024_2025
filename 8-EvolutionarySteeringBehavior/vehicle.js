@@ -88,6 +88,10 @@ class Vehicle {
     // B = bad (poison)
     // steerG = force qui attire vers la nourriture
     // steerB = force qui repousse du poison
+    // 1er param = le tableau de nourriture (bonne ou poison)
+    // 2ème param = ce qu'on va ajouter à la sante si on mange
+    // sante = this.health
+    // 3ème param = rayon de perception   
     const steerG = this.eat(good, 0.2, this.dna[2]);
     const steerB = this.eat(bad, -1, this.dna[3]);
 
@@ -167,7 +171,7 @@ class Vehicle {
   }
 
   dead() {
-    return (this.health < 0)
+    return (this.health <= 0)
   }
 
   display() {

@@ -139,7 +139,10 @@ class Vehicle {
     push();
     translate(this.pos.x, this.pos.y);
     rotate(this.vel.heading());
-    triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
+
+    //triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
+    circle(0, 0, this.r * 2);
+    
     pop();
   }
 

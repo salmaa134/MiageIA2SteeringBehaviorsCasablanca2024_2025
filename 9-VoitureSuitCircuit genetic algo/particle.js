@@ -20,7 +20,7 @@ function pldistance(p1, p2, x, y) {
       this.index = 0;
       this.counter = 0;
   
-      // On créer des rayns tous les 15°, entre -45° et 45°
+      // On créer des rayons tous les 15°, entre -45° et 45°
       // on a un angle de vision de 90°
       for (let a = -45; a < 45; a += 15) {
         this.rays.push(new Ray(this.pos, radians(a)));
@@ -39,8 +39,7 @@ function pldistance(p1, p2, x, y) {
         // en entrée est égal au nombre de rayons
         // le nombre de neurones en sortie est égal à 2
         // car on a 2 sorties, la direction et la vitesse
-        // On a un seul layer caché
-        // On a donc 2 layers
+        // On a donc 2 couches cachées
         // Le nombre de neurones dans le layer caché est égal
         // au nombre de neurones en entrée * 2
         // On a donc 2 layers de length neurones
@@ -184,6 +183,7 @@ function pldistance(p1, p2, x, y) {
       // output[1] est la vitesse
       
       const output = this.brain.predict(inputs);
+      
       let angle = map(output[0], 0, 1, -PI, PI);
       let speed = map(output[1], 0, 1, 0, this.maxspeed);
       // angle = this.vel.heading() + angle;

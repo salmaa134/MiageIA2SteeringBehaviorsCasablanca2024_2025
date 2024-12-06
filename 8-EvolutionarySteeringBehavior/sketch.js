@@ -45,6 +45,7 @@ function mouseDragged() {
   vehicles.push(new Vehicle(mouseX, mouseY));
 }
 
+// appelée 60 fois par seconde
 function draw() {
   background(0);
 

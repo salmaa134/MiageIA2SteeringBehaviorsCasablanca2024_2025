@@ -77,6 +77,7 @@ class Vehicle {
     // sauvegarde du contexte graphique (couleur pleine, fil de fer, épaisseur du trait, 
     // position et rotation du repère de référence)
     push();
+    
     // on déplace le repère de référence.
     translate(this.pos.x, this.pos.y);
     // et on le tourne. heading() renvoie l'angle du vecteur vitesse (c'est l'angle du véhicule)
